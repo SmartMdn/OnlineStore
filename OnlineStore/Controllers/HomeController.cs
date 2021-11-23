@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using OnlineStore.Models;
+using OnlineStore.WebUI.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OnlineStore.Controllers
+namespace OnlineStore.WebUI.Controllers
 {
     public class HomeController : Controller
     {

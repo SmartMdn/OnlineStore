@@ -9,9 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using OnlineStore.Data;
+using OnlineStore.WebUI.Data;
 
-namespace OnlineStore
+namespace OnlineStore.WebUI
 {
     public class Startup
     {
@@ -26,8 +26,8 @@ namespace OnlineStore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<MvcMovieContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("MvcMovieContext")));
+            services.AddDbContext<OnlineStoreContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("OnlineStoreContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
