@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace OnlineStore.WebUI.Models
 {
+    [Display(Name = "Товар")]
     public class Product
     {
         public int Id { get; set; }
@@ -18,7 +19,7 @@ namespace OnlineStore.WebUI.Models
         [DataType(DataType.Date)]
         public DateTime ProductionDateTime { get; set; }
         [Display(Name = "Цена")]
-        [Column(TypeName = "decimal(18, 2)")]
+        [Range(0, 999.99, ErrorMessage = "Введено неверное число")]
         public double Price { get; set; }
         [Display(Name = "Описание")]
         public string Description { get; set; }
