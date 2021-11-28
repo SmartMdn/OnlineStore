@@ -54,7 +54,7 @@ namespace OnlineStore.WebUI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ProductionDateTime,Price,Description")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,Title,ProductionDateTime,Price,Description,CategoriesId")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace OnlineStore.WebUI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ProductionDateTime,Price,Description")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ProductionDateTime,Price,Description,CategoriesId")] Product product)
         {
             if (id != product.Id)
             {

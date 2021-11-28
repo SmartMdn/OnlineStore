@@ -23,7 +23,8 @@ namespace OnlineStore.WebUI.Models
         public double Price { get; set; }
         [Display(Name = "Описание")]
         public string Description { get; set; }
-        
+        [Display(Name = "Код категории")] 
+        public int CategoriesId { get; set; }
 
 
     }
