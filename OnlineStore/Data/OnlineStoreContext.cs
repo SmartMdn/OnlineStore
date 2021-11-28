@@ -8,7 +8,6 @@ namespace OnlineStore.WebUI.Data
         public OnlineStoreContext(DbContextOptions<OnlineStoreContext> options ) : base(options)
         {
 
-
         }
 
         public DbSet<Product> Products { get; set; }

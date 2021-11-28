@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Globalization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
@@ -26,6 +27,13 @@ namespace OnlineStore.WebUI
             services.AddControllersWithViews();
             services.AddDbContext<OnlineStoreContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("OnlineStoreContext")));
+            services.AddDbContext<UserContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("UserContext")));
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options => //CookieAuthenticationOptions
+                {
+                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,22 +49,13 @@ namespace OnlineStore.WebUI
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            /*
-            var defaultCulture = new CultureInfo("es-UY");
-            var localizationOptions = new RequestLocalizationOptions
-            {
-                DefaultRequestCulture = new RequestCulture(defaultCulture),
-                SupportedCultures = new List<CultureInfo> { defaultCulture },
-                SupportedUICultures = new List<CultureInfo> { defaultCulture }
-            };
-            app.UseRequestLocalization(localizationOptions);
-            */
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
-
-            app.UseAuthorization();
+            app.UseAuthentication();    // аутентификация
+            app.UseAuthorization();     // авторизация
 
             app.UseEndpoints(endpoints =>
             {
