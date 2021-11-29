@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.WebUI.Data;
 using OnlineStore.WebUI.Models;
+using OnlineStore.WebUI.Models.ViewModels;
 
 namespace OnlineStore.WebUI.Controllers
 {
@@ -58,9 +59,13 @@ namespace OnlineStore.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (_context.Categories.Any(o => o.Id == product.CategoryId))
+                {
+                    _context.Add(product);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+
             }
             return View(product);
         }

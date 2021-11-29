@@ -1,38 +1,59 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@model IEnumerable<OnlineStore.WebUI.Models.Product>
+@using Microsoft.EntityFrameworkCore
+@using OnlineStore.WebUI.Models.ViewModels
+@model ProductsViewModel
 
 @{
-}
+    }
 
-<div class="container content">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="list-group">
-                <a href="#" class="list-group-item">Футболки</a>
-                <a href="#" class="list-group-item">Джинсы</a>
-                <a href="#" class="list-group-item">Брюки</a>
-                <a href="#" class="list-group-item">Платья</a>
-                <a href="#" class="list-group-item">Куртки</a>
-            </div>
-        </div>
-        <div>
-            <div class="row row-cols-1 row-cols-md-4 g-4">
-                @foreach (var item in Model)
+
+    <div class="container-fluid">
+        <div class="row">
+            <header class="mt-2 col-md-3">
+                <nav class=" navbar-expand-md">
+                    <a href="#" class="logo navbar-brand">Категории</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto flex-column">
+                            @foreach (var item in Model.Categories)
+                            {
+                                <li class="nav-item active">
+                                    <a href="" class="nav-link">@Html.DisplayFor(model => item.Name) </a>
+                                </li>
+                            }
+                            </ul>
+                    </div>
+                </nav>
+            </header>
+            <!-- end header -->
+
+            <main class="col-md-9">
+                <div class="row gy-2">
+                @foreach (var item in Model.Products)
                 {
+                    <div class="col-sm-4  ">
 
-                    <div class="col">
-                        <div class="card h-100">
+                        <div class="card m-3 " style="min-height: 300px">
                             <img src="..." class="card-img-top" alt="...">
                             <div class="card-body">
-                                <h5 class="card-title">@Html.DisplayFor(model=>item.Title)</h5>
+                                <h5 class="card-title">@Html.DisplayFor(model => item.Title)</h5>
                                 <p class="card-text">@Html.DisplayFor(model => item.Description)</p>
                             </div>
                         </div>
+
                     </div>
                 }
-            </div>
+                    </div>
+            </main>
+            <!-- end main -->
         </div>
+
+
+
     </div>
-</div>
+

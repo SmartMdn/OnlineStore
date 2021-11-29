@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.WebUI.Data;
+using OnlineStore.WebUI.Models.ViewModels;
 
 namespace OnlineStore.WebUI.Controllers
 {
@@ -23,7 +24,13 @@ namespace OnlineStore.WebUI.Controllers
         // GET: CatalogController
         public async Task<ActionResult> Index()
         {
-            return View(await _context.Products.ToListAsync());
+            ProductsViewModel pvm = new ProductsViewModel
+            {
+                Products = await _context.Products.ToListAsync(), 
+                Categories = await _context.Categories.ToListAsync()
+            };
+
+            return View(pvm);
         }
 
 
