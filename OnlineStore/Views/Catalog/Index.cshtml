@@ -11,22 +11,22 @@
 
     <div class="container-fluid">
         <div class="row">
-            <header class="mt-2 col-md-3">
+            <header class="mt-2 col-md-3" >
                 <nav class=" navbar-expand-md">
                     <a href="#" class="logo navbar-brand">Категории</a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-
+                    <label class="control-label">Категории: </label>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav mr-auto flex-column">
                             @foreach (var item in Model.Categories)
                             {
                                 <li class="nav-item active">
-                                    <a href="" class="nav-link">@Html.DisplayFor(model => item.Name) </a>
+                                    <a asp-action="Index" asp-route-id="@item.Id" class="nav-link" >@Html.DisplayFor(model => item.Name) </a>
                                 </li>
                             }
-                            </ul>
+                        </ul>
                     </div>
                 </nav>
             </header>
@@ -34,21 +34,22 @@
 
             <main class="col-md-9">
                 <div class="row gy-2">
-                @foreach (var item in Model.Products)
-                {
-                    <div class="col-sm-4  ">
+                    @foreach (var item in Model.Products)
+                    {
+                        <div class="col-sm-4  ">
 
-                        <div class="card m-3 " style="min-height: 300px">
-                            <img src="..." class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">@Html.DisplayFor(model => item.Title)</h5>
-                                <p class="card-text">@Html.DisplayFor(model => item.Description)</p>
+                            <div class="card m-3 " style="min-height: 300px">
+                                <img src="..." class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">@Html.DisplayFor(model => item.Title)</h5>
+                                    <p class="card-text">@Html.DisplayFor(model => item.Description)</p>
+                                    <p class="text-muted card-text ">Цена: @Html.DisplayFor(model => item.Price) б.р.</p>
+                                    <a href="#" class=" position-absolute bottom-0 end-0 btn btn-secondary">Купить</a>
+                                </div>
                             </div>
                         </div>
-
-                    </div>
-                }
-                    </div>
+                    }
+                </div>
             </main>
             <!-- end main -->
         </div>
