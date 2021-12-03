@@ -17,13 +17,12 @@
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    <label class="control-label">Категории: </label>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav mr-auto flex-column">
                             @foreach (var item in Model.Categories)
                             {
                                 <li class="nav-item active">
-                                    <a asp-action="Index" asp-route-id="@item.Id" class="nav-link" >@Html.DisplayFor(model => item.Name) </a>
+                                    <a class ="btn-block"  asp-action="Index" asp-route-id="@item.Id" class="nav-link" >@Html.DisplayFor(model => item.Name) </a>
                                 </li>
                             }
                         </ul>
@@ -44,7 +43,7 @@
                                     <h5 class="card-title">@Html.DisplayFor(model => item.Title)</h5>
                                     <p class="card-text">@Html.DisplayFor(model => item.Description)</p>
                                     <p class="text-muted card-text ">Цена: @Html.DisplayFor(model => item.Price) б.р.</p>
-                                    <a href="#" class=" position-absolute bottom-0 end-0 btn btn-secondary">Купить</a>
+                                    <a href="#"   class=" position-absolute btn btn-secondary">Купить</a>
                                 </div>
                             </div>
                         </div>

@@ -15,10 +15,10 @@ namespace OnlineStore.WebUI.Controllers
 {
     public class AccountController : Controller
     {
-        private UserContext _userContext;
-        AccountController(UserContext context)
+        private OnlineStoreContext _context;
+        AccountController(OnlineStoreContext context)
         {
-            _userContext = context;
+            _context = context;
 
         }
 
@@ -39,7 +39,7 @@ namespace OnlineStore.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = await _userContext.Users.FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
+                User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
                 if (user != null)
                 {
                     await Authenticate(model.Email); // аутентификация
@@ -61,12 +61,12 @@ namespace OnlineStore.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = await _userContext.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+                User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
                 if (user == null)
                 {
                     // добавляем пользователя в бд
-                    _userContext.Users.Add(new User { Email = model.Email, Password = model.Password });
-                    await _userContext.SaveChangesAsync();
+                    _context.Users.Add(new User { Email = model.Email, Password = model.Password });
+                    await _context.SaveChangesAsync();
 
                     await Authenticate(model.Email); // аутентификация
 

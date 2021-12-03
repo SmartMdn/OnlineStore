@@ -26,9 +26,7 @@ namespace OnlineStore.WebUI.Controllers
         public async Task<ActionResult> Index(int? id)
         {
 
-
             id ??= 0;
-
             IQueryable<Product> products = _context.Products;
 
             if ( id != 0)
