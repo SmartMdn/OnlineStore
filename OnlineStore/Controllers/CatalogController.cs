@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.WebUI.Data;
+using OnlineStore.WebUI.Models;
+using OnlineStore.WebUI.Models.ViewModels;
 
 namespace OnlineStore.WebUI.Controllers
 {
@@ -21,11 +23,25 @@ namespace OnlineStore.WebUI.Controllers
 
 
         // GET: CatalogController
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(int? id)
         {
-            return View(await _context.Products.ToListAsync());
-        }
 
+            id ??= 0;
+            IQueryable<Product> products = _context.Products;
+
+            if ( id != 0)
+            {
+                products = products.Where(p => p.CategoryId == id);
+            }
+
+            ProductsViewModel pvm = new ProductsViewModel
+            {
+                Products = await products.ToListAsync(),
+                Categories = await _context.Categories.ToListAsync()
+            };
+
+            return View(pvm);
+        }
 
     }
 }

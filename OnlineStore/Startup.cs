@@ -27,8 +27,6 @@ namespace OnlineStore.WebUI
             services.AddControllersWithViews();
             services.AddDbContext<OnlineStoreContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("OnlineStoreContext")));
-            services.AddDbContext<UserContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("UserContext")));
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => //CookieAuthenticationOptions
                 {
@@ -61,7 +59,7 @@ namespace OnlineStore.WebUI
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Products}/{action=Create}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

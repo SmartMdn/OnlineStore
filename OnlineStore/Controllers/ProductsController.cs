@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.WebUI.Data;
 using OnlineStore.WebUI.Models;
+using OnlineStore.WebUI.Models.ViewModels;
 
 namespace OnlineStore.WebUI.Controllers
 {
@@ -54,13 +55,17 @@ namespace OnlineStore.WebUI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ProductionDateTime,Price,Description")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,Title,ProductionDateTime,Price,Description,CategoriesId")] Product product)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (_context.Categories.Any(o => o.Id == product.CategoryId))
+                {
+                    _context.Add(product);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+
             }
             return View(product);
         }
@@ -86,7 +91,7 @@ namespace OnlineStore.WebUI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ProductionDateTime,Price,Description")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ProductionDateTime,Price,Description,CategoriesId")] Product product)
         {
             if (id != product.Id)
             {
