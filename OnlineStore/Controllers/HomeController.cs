@@ -6,10 +6,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using OnlineStore.WebUI.Models.ViewModels;
 
 namespace OnlineStore.WebUI.Controllers
 {
+    
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -18,7 +20,7 @@ namespace OnlineStore.WebUI.Controllers
         {
             _logger = logger;
         }
-
+        [Authorize(Policy  = "OnlyForAuthenticateUser")]
         public IActionResult Index()
         {
             return View();

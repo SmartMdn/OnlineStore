@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Globalization;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,6 +33,18 @@ namespace OnlineStore.WebUI
                 {
                     options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
                 });
+
+            services.AddAuthorization(opts =>
+            {
+                opts.AddPolicy("OnlyForAdmin", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireRole("admin");
+                });
+
+                opts.AddPolicy("OnlyForAuthenticateUser", policy => { policy.RequireAuthenticatedUser(); });
+
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

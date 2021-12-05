@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -15,8 +16,8 @@ namespace OnlineStore.WebUI.Controllers
 {
     public class AccountController : Controller
     {
-        private OnlineStoreContext _context;
-        AccountController(OnlineStoreContext context)
+        private readonly OnlineStoreContext _context;
+        public AccountController(OnlineStoreContext context)
         {
             _context = context;
 
@@ -42,7 +43,7 @@ namespace OnlineStore.WebUI.Controllers
                 User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
                 if (user != null)
                 {
-                    await Authenticate(model.Email); // аутентификация
+                    await Authenticate(user); // аутентификация
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -50,6 +51,8 @@ namespace OnlineStore.WebUI.Controllers
             }
             return View(model);
         }
+
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -65,28 +68,35 @@ namespace OnlineStore.WebUI.Controllers
                 if (user == null)
                 {
                     // добавляем пользователя в бд
-                    _context.Users.Add(new User { Email = model.Email, Password = model.Password });
+                    user = new User
+                    {
+                        Email = model.Email,
+                        Password = model.Password
+                    };
+                    _context.Users.Add(user);
                     await _context.SaveChangesAsync();
 
-                    await Authenticate(model.Email); // аутентификация
+                    await Authenticate(user);
 
                     return RedirectToAction("Index", "Home");
                 }
-                else
-                    ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+
+                ModelState.AddModelError("", "Некорректные логин и(или) пароль");
             }
             return View(model);
         }
 
-        private async Task Authenticate(string userName)
+        private async Task Authenticate(User user)
         {
             // создаем один claim
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                new Claim(ClaimTypes.Role, "admin")
             };
             // создаем объект ClaimsIdentity
-            ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+            ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType,
+                ClaimsIdentity.DefaultRoleClaimType);
             // установка аутентификационных куки
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
