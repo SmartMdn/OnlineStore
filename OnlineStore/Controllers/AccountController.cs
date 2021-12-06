@@ -67,12 +67,14 @@ namespace OnlineStore.WebUI.Controllers
                 User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
                 if (user == null)
                 {
-                    // добавляем пользователя в бд
+                    
                     user = new User
                     {
                         Email = model.Email,
-                        Password = model.Password
+                        Password = model.Password,
+                        DotUsername = null
                     };
+
                     _context.Users.Add(user);
                     await _context.SaveChangesAsync();
 
@@ -88,11 +90,17 @@ namespace OnlineStore.WebUI.Controllers
 
         private async Task Authenticate(User user)
         {
+            string role = "user";
             // создаем один claim
+            if (user.Email == "i.matyuninn@gmail.com" )
+            {
+                role = "admin";
+
+            }
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
-                new Claim(ClaimTypes.Role, "admin")
+                new Claim(ClaimTypes.Role, role)
             };
             // создаем объект ClaimsIdentity
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType,

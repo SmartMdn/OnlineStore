@@ -12,7 +12,7 @@ namespace OnlineStore.WebUI.Models
     public class Product : IEnumerable
     {
         public int Id { get; set; }
-        
+
         [Required]
         [Display(Name = "Название товара")]
         public string Title { get; set; }

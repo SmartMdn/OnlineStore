@@ -25,7 +25,7 @@ namespace OnlineStore.WebUI.Controllers
         {
             return View();
         }
-
+        [Authorize(Policy = "OnlyForAuthenticateUser")]
         public IActionResult Privacy()
         {
             return View();

@@ -22,7 +22,7 @@
                             @foreach (var item in Model.Categories)
                             {
                                 <li class="nav-item active">
-                                    <a class ="btn-block"  asp-action="Index" asp-route-id="@item.Id" class="nav-link" >@Html.DisplayFor(model => item.Name) </a>
+                                    <a class ="form-control"  asp-action="Index" asp-route-id="@item.Id" class="nav-link" >@Html.DisplayFor(model => item.Name) </a>
                                 </li>
                             }
                         </ul>
