@@ -28,6 +28,8 @@ namespace OnlineStore.WebUI.Models
         public Category Category { get; set; }
 
         public int? CategoryId { get; set; }
+
+        public int? CartId { get; set; }
         
 
         public IEnumerator GetEnumerator()

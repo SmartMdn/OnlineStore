@@ -36,14 +36,13 @@
                     @foreach (var item in Model.Products)
                     {
                         <div class="col-sm-4  ">
-
                             <div class="card m-3 " style="min-height: 300px">
                                 <img src="..." class="card-img-top" alt="...">
                                 <div class="card-body">
                                     <h5 class="card-title">@Html.DisplayFor(model => item.Title)</h5>
                                     <p class="card-text">@Html.DisplayFor(model => item.Description)</p>
                                     <p class="text-muted card-text ">Цена: @Html.DisplayFor(model => item.Price) б.р.</p>
-                                    <a href="#"   class=" position-absolute btn btn-secondary">Купить</a>
+                                    <a asp-controller="Catalog" asp-action="AddInBasket" asp-route-productId="@item.Id"  class=" position-absolute btn btn-secondary">Купить</a>
                                 </div>
                             </div>
                         </div>

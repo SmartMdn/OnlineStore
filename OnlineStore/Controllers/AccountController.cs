@@ -62,35 +62,33 @@ namespace OnlineStore.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View(model);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+            if (user == null)
             {
-                User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
-                if (user == null)
-                {
                     
-                    user = new User
-                    {
-                        Email = model.Email,
-                        Password = model.Password,
-                        DotUsername = null
-                    };
+                user = new User
+                {
+                    Email = model.Email,
+                    Password = model.Password,
+                    DotUsername = null
+                };
 
-                    _context.Users.Add(user);
-                    await _context.SaveChangesAsync();
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
 
-                    await Authenticate(user);
+                await Authenticate(user);
 
-                    return RedirectToAction("Index", "Home");
-                }
-
-                ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+                return RedirectToAction("Index", "Home");
             }
+
+            ModelState.AddModelError("", "Некорректные логин и(или) пароль");
             return View(model);
         }
 
         private async Task Authenticate(User user)
         {
-            string role = "user";
+            var role = "user";
             // создаем один claim
             if (user.Email == "i.matyuninn@gmail.com" )
             {
@@ -99,11 +97,12 @@ namespace OnlineStore.WebUI.Controllers
             }
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, role)
+
             };
             // создаем объект ClaimsIdentity
-            ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType,
+            var id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType,
                 ClaimsIdentity.DefaultRoleClaimType);
             // установка аутентификационных куки
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));

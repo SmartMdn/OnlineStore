@@ -3,21 +3,38 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineStore.WebUI.Data;
 
 namespace OnlineStore.WebUI.Migrations
 {
     [DbContext(typeof(OnlineStoreContext))]
-    partial class OnlineStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20211206223233_abc3")]
+    partial class abc3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.12")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("OnlineStore.WebUI.Models.Basket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Baskets");
+                });
 
             modelBuilder.Entity("OnlineStore.WebUI.Models.Category", b =>
                 {
@@ -42,7 +59,7 @@ namespace OnlineStore.WebUI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CartId")
+                    b.Property<int?>("BasketId")
                         .HasColumnType("int");
 
                     b.Property<int?>("CategoryId")
@@ -63,6 +80,8 @@ namespace OnlineStore.WebUI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BasketId");
+
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
@@ -74,9 +93,6 @@ namespace OnlineStore.WebUI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CartId")
-                        .HasColumnType("int");
 
                     b.Property<string>("DotUsername")
                         .HasColumnType("nvarchar(max)");
@@ -94,11 +110,20 @@ namespace OnlineStore.WebUI.Migrations
 
             modelBuilder.Entity("OnlineStore.WebUI.Models.Product", b =>
                 {
+                    b.HasOne("OnlineStore.WebUI.Models.Basket", null)
+                        .WithMany("Products")
+                        .HasForeignKey("BasketId");
+
                     b.HasOne("OnlineStore.WebUI.Models.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId");
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("OnlineStore.WebUI.Models.Basket", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("OnlineStore.WebUI.Models.Category", b =>
