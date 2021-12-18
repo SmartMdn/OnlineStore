@@ -1,17 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.WebUI.Data;
 using OnlineStore.WebUI.Models;
 using OnlineStore.WebUI.Models.ViewModels;
-using static OnlineStore.WebUI.Controllers.AccountController;
 
 namespace OnlineStore.WebUI.Controllers
 {
@@ -19,10 +16,12 @@ namespace OnlineStore.WebUI.Controllers
     {
 
         private readonly OnlineStoreContext _context;
+        private readonly IWebHostEnvironment _appEnvironment;
 
-        public CatalogController(OnlineStoreContext context)
+        public CatalogController(OnlineStoreContext context, IWebHostEnvironment appEnvironment)
         {
             _context = context;
+            _appEnvironment = appEnvironment;
         }
 
 
@@ -39,31 +38,28 @@ namespace OnlineStore.WebUI.Controllers
                 products = products.Where(p => p.CategoryId == id);
             }
 
+                
             ProductsViewModel pvm = new ProductsViewModel
             {
                 Products = await products.ToListAsync(),
-                Categories = await _context.Categories.ToListAsync()
+                Categories = await _context.Categories.ToListAsync(),
+                Files = await _context.Files.ToListAsync()
             };
 
             return View(pvm);
         }
 
 
-        public async Task<IActionResult> AddInBasket(int ProductId)
+        public async Task<IActionResult> AddInBasket(int productId)
         {
-            IQueryable<Product> products = _context.Products;
-            var product = await _context.Products.FindAsync(ProductId);
-            if (User.Identity != null)
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null) return RedirectToAction(nameof(Index));
+            if (User.Identity is {Name: { }})
             {
-                if (User.Identity.Name != null)
-                {
-                    var user = await _context.Users.FindAsync(int.Parse(User.Identity.Name));
-                    product.CartId = user.CartId;
-                }
+                var user = await _context.Users.FindAsync(int.Parse(User.Identity.Name));
+                if (user == null) return RedirectToAction(nameof(Index));
+                product.CartId = user.CartId;
             }
-
-            
-
             try
             {
                 _context.Update(product);
@@ -75,6 +71,7 @@ namespace OnlineStore.WebUI.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
+        
+        
     }
 }

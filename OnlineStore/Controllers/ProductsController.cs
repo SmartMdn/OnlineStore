@@ -1,24 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.WebUI.Data;
+using OnlineStore.WebUI.Migrations;
 using OnlineStore.WebUI.Models;
 using OnlineStore.WebUI.Models.ViewModels;
+using SharpCompress.Compressors.PPMd;
 
 namespace OnlineStore.WebUI.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly OnlineStoreContext _context;
+        private readonly IWebHostEnvironment _appEnvironment;
 
-        public ProductsController(OnlineStoreContext context)
+        public ProductsController(OnlineStoreContext context, IWebHostEnvironment appEnvironment)
         {
             _context = context;
+            _appEnvironment = appEnvironment;
         }
 
         // GET: Products
@@ -49,7 +56,7 @@ namespace OnlineStore.WebUI.Controllers
 
         // GET: Products/Create
         [Authorize(Policy = "OnlyForAdmin")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             return View();
         }
@@ -59,19 +66,28 @@ namespace OnlineStore.WebUI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ProductionDateTime,Price,Description,CategoriesId")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,Title,ProductionDateTime,Price,Description,CategoryId")] Product product, IFormFile uploadedFile)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View(product);
+            if (!_context.Categories.Any(o => o.Id == product.CategoryId)) return View(product);
+            if (uploadedFile == null) return View(product);
+            // путь к папке Files
+            var path = "/files/pictures/products/" + uploadedFile.FileName;
+            if (_context.Files.Any(f => f.Path == path)) return View(product);  //Проверка повторяющихся путей
+            // сохраняем файл в папку Files в каталоге wwwroot
+            
+            await using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
             {
-                if (_context.Categories.Any(o => o.Id == product.CategoryId))
-                {
-                    _context.Add(product);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-
+                await uploadedFile.CopyToAsync(fileStream);
             }
-            return View(product);
+            
+            FileModel file = new FileModel { Name = product.Title+".jpg", Path = path };
+            _context.Files.Add(file);
+            product.File = path;
+            _context.Add(product);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+            
         }
 
         // GET: Products/Edit/5
@@ -96,7 +112,7 @@ namespace OnlineStore.WebUI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ProductionDateTime,Price,Description,CategoriesId")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ProductionDateTime,Price,Description,CategoryId")] Product product, IFormFile uploadedFile)
         {
             if (id != product.Id)
             {
@@ -162,5 +178,24 @@ namespace OnlineStore.WebUI.Controllers
 
 
         }
+        
+        [HttpPost]
+        public async Task<IActionResult> AddFile(IFormFile uploadedFile)
+        {
+            if (uploadedFile == null) return RedirectToAction("Index");
+            // путь к папке Files
+            var path = "/Files/" + uploadedFile.FileName;
+            // сохраняем файл в папку Files в каталоге wwwroot
+            await using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+            {
+                await uploadedFile.CopyToAsync(fileStream);
+            }
+            FileModel file = new FileModel { Name = uploadedFile.FileName, Path = path };
+            _context.Files.Add(file);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
     }
 }

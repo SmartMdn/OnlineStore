@@ -1,7 +1,5 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OnlineStore.WebUI.Models.ViewModels
 {
@@ -10,7 +8,7 @@ namespace OnlineStore.WebUI.Models.ViewModels
 
         public IEnumerable<Product> Products { get; set; }
         public IEnumerable<Category> Categories { get; set; }
-
+        public IEnumerable<FileModel> Files { get; set; }
 
     }
 }

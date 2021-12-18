@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace OnlineStore.WebUI.Models
 {
@@ -26,9 +28,10 @@ namespace OnlineStore.WebUI.Models
         public string Description { get; set; }
         [Display(Name = "Код категории")] 
         public Category Category { get; set; }
-
+        
+        public string File { get; set; }
         public int? CategoryId { get; set; }
-
+        
         public int? CartId { get; set; }
         
 
@@ -40,6 +43,7 @@ namespace OnlineStore.WebUI.Models
 
     public class Category
     {
+       
         public int Id { get; set; }
         [Required(ErrorMessage = "Введите название категории")]
         public string Name { get; set; }

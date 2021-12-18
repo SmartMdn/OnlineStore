@@ -1,5 +1,5 @@
 ﻿@using OnlineStore.WebUI.Models.ViewModels
-@model ProductsViewModel
+@model CartViewModel
 
 <div class="text-center">
     <h1 class="display-4">Покупательская корзина</h1>
@@ -10,8 +10,15 @@
         @foreach (var item in Model.Products)
         {
             <div class="col-sm-3  ">
-                <div class="card m-3 " style="min-height: 300px">
-                    <img src="..." class="card-img-top" alt="...">
+                <div class="card  py-5 my-5 " style="min-height: 300px">
+                    @if (item.File != null)
+                    {
+                        <img src="@Url.Content(item.File)" class="card-img-top" alt="...">
+                    }
+                    else
+                    {
+                        <img src="..." class="card-img-top" alt="...">
+                    }
                     <div class="card-body">
                         <h5 class="card-title">@Html.DisplayFor(model => item.Title)</h5>
                         <p class="card-text">@Html.DisplayFor(model => item.Description)</p>
@@ -20,9 +27,10 @@
                 </div>
             </div>
         }
+        <title class="card-title" >Общая цена:@Model.AllPrice</title>
     </div>
 </main>
 <div>
-    <a class="btn-dark" asp-controller="Cart" asp-action="SubbmitOrder">Купить</a>
+    <a class="btn btn-secondary" asp-controller="Cart" asp-action="SubmitOrder">Купить</a>
 </div>
 

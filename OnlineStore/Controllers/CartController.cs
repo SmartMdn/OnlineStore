@@ -30,14 +30,22 @@ namespace OnlineStore.WebUI.Controllers
             var products =
                 _context.Products.Where(p => p.CartId == user.CartId);
 
-            ProductsViewModel pvm = new()
+            double allprice = 0;
+            foreach (var product in products)
+            {
+                allprice += product.Price;
+            }
+
+            CartViewModel cvm = new()
             {
                 Products = products,
-                Categories = await _context.Categories.ToListAsync()
+                Categories = await _context.Categories.ToListAsync(),
+                Files = await _context.Files.ToListAsync(),
+                AllPrice = allprice
             };
 
 
-            return View(pvm);
+            return View(cvm);
 
         }
 
@@ -47,7 +55,7 @@ namespace OnlineStore.WebUI.Controllers
 
         }
 
-        public async Task<IActionResult>  SubbmitOrder()
+        public async Task<IActionResult>  SubmitOrder()
         {
             IQueryable<Product> products = _context.Products;
             if (User.Identity == null) return RedirectToAction(nameof(EmptyCart));

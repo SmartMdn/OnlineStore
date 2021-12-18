@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using OnlineStore.WebUI.Migrations
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -19,15 +20,12 @@
                     <li class="nav-item active ">
                         <a class="nav-link" asp-area="" asp-controller="Catalog" asp-action="Index" >Каталог</a>
                     </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" tabindex="-1" aria-disabled="true" asp-area="" asp-controller="Account" asp-action="Index">Личный кабинет<span class="sr-only">(current)</span></a>
-                    </li>
                 </ul>
                 <form class="form-inline my-2 my-lg-0">
-
-                    <input class="form-control mr-sm-2" type="search" placeholder="Поиск">
-                    <button class="btn btn-dark my-2 my-sm-0" type="submit">Найти</button>
-                    <a class="p-2" asp-area="" asp-controller="Cart" asp-action="Index"> <img src="C:/Users/vampi/OneDrive/Рабочий стол/OnlineStore/OnlineStore/Views/Content/basket_icon-icons.com_67985.png"> </a>
+                    <a class="nav-link" asp-controller ="Account" asp-action="Logout" > Выйти из аккаунта </a>
+                    <a class="p-2" asp-area="" asp-controller="Cart" asp-action="Index">
+                        <img src="@Url.Content("files/pictures/4105931-add-to-cart-buy-cart-sell-shop-shopping-cart_113919.png")" alt="Корзина">
+                    </a>
                 </form>
             </div>
         </nav>
@@ -46,6 +44,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>     
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @RenderSection("Scripts", required: false)
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
