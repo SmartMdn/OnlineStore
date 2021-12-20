@@ -41,7 +41,7 @@ namespace OnlineStore.WebUI.Controllers
                 Products = products,
                 Categories = await _context.Categories.ToListAsync(),
                 Files = await _context.Files.ToListAsync(),
-                AllPrice = allprice
+                AllPrice = Math.Round(allprice,3)
             };
 
 
